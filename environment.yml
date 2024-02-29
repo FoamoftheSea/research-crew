@@ -1,0 +1,16 @@
+name: research-crew
+channels:
+  - conda-forge
+  - nvidia
+  - pytorch
+dependencies:
+  - python=3.10
+  - pytorch=2.2.1
+  - pytorch-cuda=11.8
+  - faiss-gpu
+  - pip
+  - pip:
+      - arxiv
+      - transformers
+      - crewai
+      - pypdf
