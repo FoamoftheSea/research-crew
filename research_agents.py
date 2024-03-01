@@ -46,8 +46,9 @@ class ResearchAgents:
                 f"""
                 Follow instructions from the Lead Researcher to help your team achieve its goal of writing an in-depth 
                 and comprehensive research summary on the topic of {self.topic}. Use `search_arxiv` to search for 
-                relevant papers, and then store them into the vector database with `store_arxiv_paper`. Then write a 
-                series of in-depth summaries of each paper, and return them to the Lead Researcher.
+                relevant papers, and then store them into the vector database with `store_arxiv_paper`. Then, study the 
+                details of the papers using the `search_vector_store` tool and write a series of in-depth summaries of 
+                each paper, and return them to the Lead Researcher.
                 """
             ),
             verbose=True,
@@ -65,7 +66,7 @@ class ResearchAgents:
                 SearchTools.search_internet,
                 SearchTools.search_news,
                 VectorDatabaseTools.store_arxiv_paper,
-                VectorDatabaseTools.chat_with_docs
+                VectorDatabaseTools.search_vector_store
             ],
             allow_delegation=False,
             llm=self.llm,

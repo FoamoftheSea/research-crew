@@ -23,7 +23,7 @@ class ResearchTasks:
                 1. Have the Researcher perform their task of collecting all of the relevant knowledge on the subject 
                 of {self.topic}, having them first reflect on the knowledge they already contain about the subject, then 
                 use their tools to search for and store the relevant arxiv.org papers into the vector database.
-                2. Have the Researcher use the `chat_with_docs` tool to access that database in order to write a 
+                2. Have the Researcher use the `search_vector_store` tool to study that database in order to write a 
                 chronologically ordered set of thorough 2-paragraph research summary for each of the papers, and return 
                 this back to you.
                 3. Review the research summaries, and if they are not sufficiently detailed to provide the writer with 
@@ -58,8 +58,8 @@ class ResearchTasks:
                 determine which knowledge was already in your training data, and which knowledge you will need to search 
                 for. You should use the `search_arxiv` tool to locate the web URLs of all formative papers on 
                 this subject, and pass these URLs to the `store_arxiv_paper` tool to download and store these papers in 
-                the vector database. Use the information stored in this vector database using the `chat_with_docs` tool 
-                to construct comprehensive yet concise research summaries of all of the formative work on the subject, 
+                the vector database. Study the information stored in this vector database using the `search_vector_store` 
+                tool to construct comprehensive yet concise research summaries of all of the formative work on the subject, 
                 complete with the relevant citation information. Your summaries should enable your team's writer to 
                 construct a comprehensive, in-depth research survey on the subject.
                 Note: {self._tip_section}
@@ -78,7 +78,7 @@ class ResearchTasks:
                 SearchTools.search_internet,
                 SearchTools.search_news,
                 VectorDatabaseTools.store_arxiv_paper,
-                VectorDatabaseTools.chat_with_docs
+                VectorDatabaseTools.search_vector_store
             ]
         )
         return research_task
@@ -102,7 +102,7 @@ class ResearchTasks:
                 """
             ),
             agent=agent,
-            tools=[VectorDatabaseTools.chat_with_docs]
+            tools=[VectorDatabaseTools.search_vector_store]
         )
 
         return write_task

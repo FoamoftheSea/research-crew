@@ -1,3 +1,4 @@
+from textwrap import dedent
 from typing import List
 
 import arxiv
@@ -7,6 +8,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.embeddings import Embeddings
 from transformers import AutoTokenizer
 from transformers.utils.generic import PaddingStrategy
+from langchain_openai import OpenAIEmbeddings
 
 
 class MistralEmbeddings(Embeddings):
@@ -22,6 +24,12 @@ class MistralEmbeddings(Embeddings):
         """Embed query text."""
         embeddings = self.tokenizer(text, max_length=300, truncation=True, padding=PaddingStrategy.MAX_LENGTH)
         return embeddings.data["input_ids"]
+
+
+database = None
+# tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.2", pad_token="</s>")
+# tokenizer = AutoTokenizer.from_pretrained("mistralai/Mixtral-8x7B-Instruct-v0.1", pad_token="</s>")
+# embeddings = MistralEmbeddings(tokenizer=tokenizer)
 
 
 class VectorDatabaseTools:
