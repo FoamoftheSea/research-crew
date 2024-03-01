@@ -22,19 +22,23 @@ class ResearchTasks:
                 is enumerated here:
                 1. Have the Researcher perform their task of collecting all of the relevant knowledge on the subject 
                 of {self.topic}, having them first reflect on the knowledge they already contain about the subject, then 
-                use their tools to search for and store the relevant arxiv.org papers into the vector database.
+                use their tools to search for and store the relevant arxiv.org papers into the vector database. Have 
+                them provide you a list of the papers stored.
                 2. Have the Researcher use the `search_vector_store` tool to study that database in order to write a 
-                chronologically ordered set of thorough 2-paragraph research summary for each of the papers, and return 
+                chronologically ordered set of thorough 3-paragraph research summary for each of the papers, and return 
                 this back to you.
-                3. Review the research summaries, and if they are not sufficiently detailed to provide the writer with 
-                all the information needed to complete a comprehensive survey, go back to step 1.
+                3. Use the list of papers that were stored as a checklist to make sure we have summaries for each.
+                If the researcher has skipped any, request of them to complete summaries until we have all of them.
                 4. Share these research summaries with the Writer, and have the Writer create a draft which fully
                 covers the currently available knowledge, being sure that they cite the relevant sources.
                 5. Review the draft for quality. If the research survey is not comprehensive or of the highest quality 
                 possible, store the current draft, and go back to step 1.
-                6. If the draft is ready for review, save it to the output and alert the user. 
+                6. If the draft is ready for review, save it to the output and alert the user. In order for the draft 
+                to be ready for review, it must cover each of the formative works in detail, providing explanations 
+                of each approach so that their contributions in the greater narrative are well understood.
                 Note: You are responsible for storing the current draft in your memory and supplying this to the 
-                writer for each iteration. {self._tip_section}
+                writer for each iteration. If any of the other agents tell you they can't use tools, remind them 
+                that they are in fact able to and repeat your previous request. {self._tip_section}
                 """
             ),
             expected_output=dedent(

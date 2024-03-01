@@ -4,9 +4,12 @@ from research_agents import ResearchAgents
 # from langchain_community.llms import Ollama
 from langchain_openai import ChatOpenAI
 
+model_name = "gpt-4-1106-preview"
+# model_name = "gpt-3.5-turbo-1106"
+
 # Topic for the crew run
 topic = 'Quantization of large language models'
-research_agents = ResearchAgents(topic=topic, llm=ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0.5))
+research_agents = ResearchAgents(topic=topic, llm=ChatOpenAI(model_name=model_name, temperature=0.5))
 research_tasks = ResearchTasks(topic=topic)
 
 lead_researcher = research_agents.lead_researcher()

@@ -47,7 +47,7 @@ class ResearchAgents:
                 Follow instructions from the Lead Researcher to help your team achieve its goal of writing an in-depth 
                 and comprehensive research summary on the topic of {self.topic}. Use `search_arxiv` to search for 
                 relevant papers, and then store them into the vector database with `store_arxiv_paper`. Then, study the 
-                details of the papers using the `search_vector_store` tool and write a series of in-depth summaries of 
+                details of the papers using the `search_vector_store` tool and write an in-depth 3-paragraph summary for 
                 each paper, and return them to the Lead Researcher.
                 """
             ),
@@ -80,8 +80,10 @@ class ResearchAgents:
             goal=dedent(
                 f"""
                 Use the research summaries provided by your team to complete thorough, detailed, and fully-cited drafts 
-                of research surveys on the topic of {self.topic}. Your surveys must include all citation details for the 
-                information covered.
+                of research surveys on the topic of {self.topic}. Your surveys must cover all of the information 
+                provided to you in the research summaries, tying your explanations of their approaches and findings 
+                into an engaging chronological narrative. Include all citation details for the papers covered, 
+                including the year of publication.
                 """
             ),
             verbose=True,
