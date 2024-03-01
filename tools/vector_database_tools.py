@@ -25,40 +25,36 @@ class MistralEmbeddings(Embeddings):
 
 
 class VectorDatabaseTools:
-    def __init__(self):
-        self.database = None
-        self.tokenizer = AutoTokenizer.from_pretrained("mistralai/Mixtral-7B-Instruct-v0.2", pad_token="</s>")
-        # self.tokenizer = AutoTokenizer.from_pretrained("mistralai/Mixtral-8x7B-Instruct-v0.1", pad_token="</s>")
-
-    @tool("Use arxiv.org URL to download a paper and store into a local vector database")
-    def store_arxiv_paper(self, link: str) -> None:
+    @tool("Store arxiv.org paper into a local vector database using URL")
+    def store_arxiv_paper(link: str) -> None:
         """Uses arxiv API to download paper, then store it into a vector database"""
         paper_id = link.split("/")[-1].replace(".pdf", "")
         paper = next(arxiv.Client().results(arxiv.Search(id_list=[paper_id])))
-        filename = paper_id + ".pdf"
+        filename = f"{paper.pdf_url.split('/')[-1]}.{paper.title.replace(' ', '_')}.pdf"
         paper.download_pdf(dirpath="./papers", filename=filename)
-        loader = PyPDFLoader(filename)
+        loader = PyPDFLoader(f"./papers/{filename}")
         pages = loader.load_and_split()
-        if self.database is None:
-            self.database = FAISS.from_documents(pages, self.tokenizer)
+        if globals()["database"] is None:
+            globals()["database"] = FAISS.from_documents(pages, OpenAIEmbeddings(model="text-embedding-3-small"))
         else:
-            self.database.add_texts(pages)
+            globals()["database"].add_documents(pages)
 
-    @tool("Chat with the current set of downloaded research papers using queries")
-    def chat_with_docs(self, query: str) -> str:
+    @tool("Search current research vector database for the 2 most similar vectors to the input query")
+    def search_vector_store(query: str) -> str:
         """Query the vector database to discover information stored there."""
-        docs = self.database.similarity_search(query, k=2)
+        docs = globals()["database"].similarity_search(query, k=2)
         result = " ".join(
             [
-                f"""
-                ---\n
-                Source: {doc.metadata['source']}\n
-                Page: {doc.metadata['page']}\n
-                ---\n
-                {doc.page_content}\n
-                """
+                dedent(
+                    f"""
+                    ---\n
+                    Source: {doc.metadata['source']}\n
+                    Page: {doc.metadata['page']}\n
+                    ---\n
+                    {doc.page_content}\n
+                    """
+                )
                 for doc in docs
             ]
         )
-        print(result)
         return result
