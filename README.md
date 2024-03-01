@@ -1,5 +1,6 @@
 # Research Crew
 ![research-crew](research_crew.jpg)
+
 A CrewAI research crew for helping expedite research and writing efforts.
 
 ## Installation instructions
