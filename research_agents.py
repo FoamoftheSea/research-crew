@@ -82,8 +82,7 @@ class ResearchAgents:
                 Use the research summaries provided by your team to complete thorough, detailed, and fully-cited drafts 
                 of research surveys on the topic of {self.topic}. Your surveys must cover all of the information 
                 provided to you in the research summaries, tying your explanations of their approaches and findings 
-                into an engaging chronological narrative. Include all citation details for the papers covered, 
-                including the year of publication.
+                into an engaging chronological narrative. Include all citation details for the papers covered.
                 """
             ),
             verbose=True,
