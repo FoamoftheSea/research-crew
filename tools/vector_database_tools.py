@@ -1,3 +1,4 @@
+from pathlib import Path
 from textwrap import dedent
 from typing import List
 
@@ -27,6 +28,8 @@ class MistralEmbeddings(Embeddings):
 
 
 database = None
+papers_path = Path("./papers")
+papers_path.mkdir(exist_ok=True, parents=True)
 # tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.2", pad_token="</s>")
 # tokenizer = AutoTokenizer.from_pretrained("mistralai/Mixtral-8x7B-Instruct-v0.1", pad_token="</s>")
 # embeddings = MistralEmbeddings(tokenizer=tokenizer)
