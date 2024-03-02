@@ -12,6 +12,8 @@ dependencies:
   - pip:
       - arxiv
       - transformers
-      - crewai
       - pypdf
+      - crewai==0.16.3
       - tiktoken==0.6.0
+      - langchain-community==0.0.20
+      - langchain-openai==0.0.8
