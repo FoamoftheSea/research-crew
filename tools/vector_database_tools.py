@@ -50,7 +50,7 @@ class VectorDatabaseTools:
     @tool("Search current research vector database for the 2 most similar vectors to the input query")
     def search_vector_store(query: str) -> str:
         """Query the vector database to discover information stored there."""
-        docs = globals()["database"].similarity_search(query, k=2)
+        docs = globals()["database"].similarity_search(query, k=10)
         result = " ".join(
             [
                 dedent(
