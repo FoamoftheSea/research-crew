@@ -1,15 +1,22 @@
 from crewai import Crew, Process
 from research_tasks import ResearchTasks
 from research_agents import ResearchAgents
-# from langchain_community.llms import Ollama
+from langchain_community.llms import Ollama
 from langchain_openai import ChatOpenAI
 
-model_name = "gpt-4-1106-preview"
-# model_name = "gpt-3.5-turbo-1106"
+USE_OPENAI = True
 
 # Topic for the crew run
 topic = 'Quantization of large language models'
-research_agents = ResearchAgents(topic=topic, llm=ChatOpenAI(model_name=model_name, temperature=0.5))
+
+if USE_OPENAI:
+    model_name = "gpt-4-1106-preview"
+    # model_name = "gpt-3.5-turbo-1106"
+    research_agents = ResearchAgents(topic=topic, llm=ChatOpenAI(model_name=model_name, temperature=0.5))
+else:
+    model_name = "mixtral:instruct"
+    research_agents = ResearchAgents(topic=topic, llm=Ollama(model=model_name))
+
 research_tasks = ResearchTasks(topic=topic)
 
 lead_researcher = research_agents.lead_researcher()
