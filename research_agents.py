@@ -7,11 +7,10 @@ from tools.vector_database_tools import VectorDatabaseTools
 
 
 class ResearchAgents:
-    def __init__(self, topic: str, llm=Ollama(model="mistral:instruct")):
+    def __init__(self, topic: str):
         self.topic = topic
-        self.llm = llm
 
-    def lead_researcher(self):
+    def lead_researcher(self, llm=Ollama(model="mistral:instruct")):
         # Creating a senior researcher agent with memory and verbose mode
         lead_researcher = Agent(
             role="Lead Researcher",
@@ -35,20 +34,18 @@ class ResearchAgents:
                 # VectorDatabaseTools.chat_with_docs
             ],
             allow_delegation=True,
-            llm=self.llm,
+            llm=llm,
         )
         return lead_researcher
 
-    def researcher(self):
+    def research_collector(self, llm=Ollama(model="mistral:instruct"), function_calling_llm=None):
         researcher = Agent(
-            role="Researcher",
+            role="Research Collector",
             goal=dedent(
                 f"""
                 Follow instructions from the Lead Researcher to help your team achieve its goal of writing an in-depth 
                 and comprehensive research summary on the topic of {self.topic}. Use `search_arxiv` to search for 
-                relevant papers, and then store them into the vector database with `store_arxiv_paper`. Then, study the 
-                details of the papers using the `search_vector_store` tool and write an in-depth 3-paragraph summary for 
-                each paper, and return them to the Lead Researcher.
+                relevant papers, and then store each of them into the vector database with `store_arxiv_paper`.
                 """
             ),
             verbose=True,
@@ -66,14 +63,34 @@ class ResearchAgents:
                 SearchTools.search_internet,
                 SearchTools.search_news,
                 VectorDatabaseTools.store_arxiv_paper,
-                VectorDatabaseTools.search_vector_store
             ],
             allow_delegation=False,
-            llm=self.llm,
+            llm=llm,
+            function_calling_llm=function_calling_llm or llm,
         )
         return researcher
 
-    def writer(self):
+    def research_analyzer(self, llm=Ollama(model="mistral:instruct"), function_calling_llm=None):
+        # Create an agent to analyze information stored in the research database and create summaries
+        research_analyzer = Agent(
+            role="Research Analyzer",
+            goal=f"Analyze the research stored in the vector database to write a set of comprehensive paper summaries on the topic of {self.topic}.",
+            verbose=True,
+            memory=True,
+            backstory=dedent(
+                f"""
+                You work at a leading AI think tank as a researcher, known for your ability to write extraordinarily 
+                clear and concise research summaries of the papers stored in a research database.
+                """
+            ),
+            tools=[VectorDatabaseTools.query_database],
+            allow_delegation=False,
+            llm=llm,
+            function_calling_llm=function_calling_llm or llm,
+        )
+        return research_analyzer
+
+    def writer(self, llm=Ollama(model="mistral:instruct")):
         # Creating a writer agent with custom tools and delegation capability
         writer = Agent(
             role='Writer',
@@ -97,6 +114,6 @@ class ResearchAgents:
             ),
             tools=[],
             allow_delegation=False,
-            llm=self.llm,
+            llm=llm,
         )
         return writer

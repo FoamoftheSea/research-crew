@@ -20,17 +20,23 @@ class ResearchTasks:
                 Writer completes a draft, you will review it for quality, and if it is not complete or of the highest 
                 quality possible, have your team repeat this process until the research survey is complete. The process 
                 is enumerated here:
-                1. Have the Researcher perform their task of collecting all of the relevant knowledge on the subject 
+                1. Have the Research Collector perform their task of collecting all of the relevant knowledge on the subject 
                 of {self.topic}, having them first reflect on the knowledge they already contain about the subject, then 
                 use their tools to search for and store the relevant arxiv.org papers into the vector database. Have 
                 them provide you a list of the papers stored.
-                2. Have the Researcher use the `search_vector_store` tool to study that database in order to write a 
-                chronologically ordered set of thorough 3-paragraph research summary for each of the papers, and return 
-                this back to you.
-                3. Use the list of papers that were stored as a checklist to make sure we have summaries for each.
-                If the researcher has skipped any, request of them to complete summaries until we have all of them.
-                4. Share these research summaries with the Writer, and have the Writer create a draft which fully
-                covers the currently available knowledge, being sure that they cite the relevant sources.
+                2. Consider the list of papers stored, and come up with a set of questions which should be answered in 
+                our informative survey on the topic of {self.topic}. Pass your list of questions to the Research Analyzer 
+                and have them use the `query_database` tool to query the vector database in order to answer these 
+                questions and write a chronologically ordered set of thorough 3-paragraph research summaries 
+                for each of the papers, and return this back to you. Their response to you should have two components: 
+                one being the answers to your questions, and the second being the research summaries.
+                3. Check the response of the Research Analyst for completeness, if there are questions left unanswered, 
+                or papers left unsummarized, store the previous response in your memory, and direct the Research Analyst 
+                to fill in the missing pieces with another response. Repeat this step until you have answers to all of 
+                your research questions and summaries for all stored papers.
+                4. Pass the completed research analysis containing your research questions, their answers, and the paper 
+                 summaries to the Writer, and have them use this context as well as knowledge that they already contain 
+                on the subject to write a draft of the research survey.
                 5. Review the draft for quality. If the research survey is not comprehensive or of the highest quality 
                 possible, store the current draft, and go back to step 1.
                 6. If the draft is ready for review, save it to the output and alert the user. In order for the draft 
@@ -53,8 +59,8 @@ class ResearchTasks:
         )
         return lead_research_task
 
-    def research(self, agent):
-        research_task = Task(
+    def collect_research(self, agent):
+        collect_research_task = Task(
             description=dedent(
                 f"""
                 Follow the instructions of the Lead Researcher to help your team complete a research survey on the topic 
@@ -62,7 +68,20 @@ class ResearchTasks:
                 determine which knowledge was already in your training data, and which knowledge you will need to search 
                 for. You should use the `search_arxiv` tool to locate the web URLs of all formative papers on 
                 this subject, and pass these URLs to the `store_arxiv_paper` tool to download and store these papers in 
-                the vector database. Study the information stored in this vector database using the `search_vector_store` 
+                the vector database. 
+                """
+            ),
+            agent=agent,
+            expected_output=None,
+            tools=[SearchTools.search_arxiv, SearchTools.search_internet, SearchTools.search_news]
+        )
+        return collect_research_task
+
+    def analyze_research(self, agent):
+        research_task = Task(
+            description=dedent(
+                f"""
+                Study the information stored in the research vector database using the `query_database` 
                 tool to construct comprehensive yet concise research summaries of all of the formative work on the subject, 
                 complete with the relevant citation information. Your summaries should enable your team's writer to 
                 construct a comprehensive, in-depth research survey on the subject.
@@ -77,17 +96,11 @@ class ResearchTasks:
                 database, and includes all citation information the Writer will need.
                 """
             ),
-            tools=[
-                SearchTools.search_arxiv,
-                SearchTools.search_internet,
-                SearchTools.search_news,
-                VectorDatabaseTools.store_arxiv_paper,
-                VectorDatabaseTools.search_vector_store
-            ]
+            tools=[VectorDatabaseTools.store_arxiv_paper, VectorDatabaseTools.query_database]
         )
         return research_task
 
-    def write(self, agent):
+    def write(self, agent, context):
         write_task = Task(
             description=dedent(
                 f"""
@@ -106,7 +119,8 @@ class ResearchTasks:
                 """
             ),
             agent=agent,
-            tools=[VectorDatabaseTools.search_vector_store]
+            context=context,
+            tools=[VectorDatabaseTools.query_database]
         )
 
         return write_task
