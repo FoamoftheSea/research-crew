@@ -10,7 +10,7 @@ class ResearchAgents:
     def __init__(self, topic: str):
         self.topic = topic
 
-    def lead_researcher(self, llm=Ollama(model="mistral:instruct")):
+    def lead_researcher(self, llm=Ollama(model="mistral:instruct"), function_calling_llm=None):
         # Creating a senior researcher agent with memory and verbose mode
         lead_researcher = Agent(
             role="Lead Researcher",
@@ -35,6 +35,7 @@ class ResearchAgents:
             ],
             allow_delegation=True,
             llm=llm,
+            function_calling_llm=function_calling_llm or llm,
         )
         return lead_researcher
 
