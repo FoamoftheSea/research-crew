@@ -1,30 +1,24 @@
 from crewai import Crew, Process
+from llm import LLM
+
 from research_tasks import ResearchTasks
 from research_agents import ResearchAgents
-from langchain_community.llms import Ollama
-from langchain_openai import ChatOpenAI, OpenAI
 
 USE_OPENAI = True
 
 # Topic for the crew run
 topic = 'Quantization of large language models'
 
-if USE_OPENAI:
-    smart_model = ChatOpenAI(model_name="gpt-4-1106-preview", temperature=0.5)
-    small_model = ChatOpenAI(model_name="gpt-3.5-turbo-1106", temperature=0.5)
-    # model_name = "gpt-3.5-turbo-1106"
-    research_agents = ResearchAgents(topic=topic)
-else:
-    smart_model = Ollama(model="mixtral:instruct")
-    small_model = Ollama(model="mistral:instruct")
-    research_agents = ResearchAgents(topic=topic)
+llm = LLM.gpt4_turbo()
+fn_llm = LLM.gpt4_turbo()
 
+research_agents = ResearchAgents(topic=topic)
 research_tasks = ResearchTasks(topic=topic)
 
-lead_researcher = research_agents.lead_researcher(llm=smart_model)
-research_collector = research_agents.research_collector(llm=smart_model, function_calling_llm=small_model)
-research_analyzer = research_agents.research_analyzer(llm=smart_model, function_calling_llm=small_model)
-writer = research_agents.writer(llm=smart_model)
+lead_researcher = research_agents.lead_researcher(llm=llm, function_calling_llm=fn_llm)
+research_collector = research_agents.research_collector(llm=llm, function_calling_llm=fn_llm)
+research_analyzer = research_agents.research_analyzer(llm=llm, function_calling_llm=fn_llm)
+writer = research_agents.writer(llm=llm)
 
 lead_research_task = research_tasks.lead_research(lead_researcher)
 collect_research_task = research_tasks.collect_research(research_collector)
