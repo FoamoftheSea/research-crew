@@ -1,6 +1,4 @@
 from pathlib import Path
-from textwrap import dedent
-from typing import List
 
 import arxiv
 from langchain.chains import RetrievalQA
@@ -9,34 +7,12 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.tools import tool
 from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_core.embeddings import Embeddings
-from transformers import AutoTokenizer
-from transformers.utils.generic import PaddingStrategy
 from langchain_openai import OpenAIEmbeddings, OpenAI
 
-
-class MistralEmbeddings(Embeddings):
-    def __init__(self, tokenizer):
-        self.tokenizer = tokenizer
-
-    def embed_documents(self, texts: List[str]) -> List[List[float]]:
-        """Embed search docs."""
-        embeddings = self.tokenizer(texts, max_length=300, truncation=True, padding=PaddingStrategy.MAX_LENGTH)
-        return embeddings.data["input_ids"]
-
-    def embed_query(self, text: str) -> List[float]:
-        """Embed query text."""
-        embeddings = self.tokenizer(text, max_length=300, truncation=True, padding=PaddingStrategy.MAX_LENGTH)
-        return embeddings.data["input_ids"]
-
-
 database = None
-splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+splitter = RecursiveCharacterTextSplitter(chunk_size=1024, chunk_overlap=20)
 papers_path = Path("./papers")
 papers_path.mkdir(exist_ok=True, parents=True)
-# tokenizer = AutoTokenizer.from_pretrained("mistralai/Mistral-7B-Instruct-v0.2", pad_token="</s>")
-# tokenizer = AutoTokenizer.from_pretrained("mistralai/Mixtral-8x7B-Instruct-v0.1", pad_token="</s>")
-# embeddings = MistralEmbeddings(tokenizer=tokenizer)
 
 
 class VectorDatabaseTools:
