@@ -20,16 +20,16 @@ class ResearchTasks:
                 Writer completes a draft, you will review it for quality, and if it is not complete or of the highest 
                 quality possible, have your team repeat this process until the research survey is complete. The process 
                 is enumerated here:
-                1. Have the Research Collector perform their task of collecting all of the relevant knowledge on the subject 
-                of {self.topic}, having them first reflect on the knowledge they already contain about the subject, then 
-                use their tools to search for and store the relevant arxiv.org papers into the vector database. Have 
-                them provide you a list of the papers stored.
-                2. Consider the list of papers stored, and come up with a set of questions which should be answered in 
-                our informative survey on the topic of {self.topic}. Pass your list of questions to the Research Analyzer 
-                and have them use the `query_database` tool to query the vector database in order to answer these 
-                questions and write a chronologically ordered set of thorough 3-paragraph research summaries 
-                for each of the papers, and return this back to you. Their response to you should have two components: 
-                one being the answers to your questions, and the second being the research summaries.
+                1. Have the Research Collector perform their task of collecting all of the relevant knowledge on the 
+                subject of {self.topic}, having them use their tools to search for and store the relevant arxiv.org 
+                papers into the vector database. Have them return you a list of the papers stored.
+                2. Reflect on your knowledge of the subject, consider the list of papers stored, and come up with 
+                a set of questions which should be answered in our informative survey on the topic of {self.topic}. 
+                Pass your list of questions to the Research Analyzer and have them use the `query_database` tool to 
+                query the vector database in order to answer these questions and write a chronologically ordered set of 
+                thorough 3-paragraph research summaries for each of the papers, and return this back to you. Their 
+                response to you should have two components: one being the answers to your questions, and the second 
+                being the research summaries.
                 3. Check the response of the Research Analyst for completeness, if there are questions left unanswered, 
                 or papers left unsummarized, store the previous response in your memory, and direct the Research Analyst 
                 to fill in the missing pieces with another response. Repeat this step until you have answers to all of 
